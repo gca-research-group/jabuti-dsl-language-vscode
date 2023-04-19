@@ -26,14 +26,15 @@ export const hoverProvider = {
         if (hoveredWord.includes('contract')) {
             return {
                 contents: [
-                    'A contract written in Jabuti can be interoperable for any blockchain, since its language is agnostic to the target technology.',
+                    'An agreement between two or more parties who do not trust each other unguardedly. A contract can be modelled as an Event Condition Action (ECA) system where events trigger the execution of actions when certain conditions are satisfied.',
                 ],
             };
         }
 
         if (hoveredWord.includes('beginDate')) {
             const markdown = new MarkdownString('The begin date of the contract.');
-            markdown.appendText('\nAllowed patterns:\n');
+            markdown.appendText('\nAllowed patterns: yyyy-mm-dd HH:mm, yyyy-mm-dd HH:mm:ss\n');
+            markdown.appendText('\nExamples:\n');
             markdown.appendText(`\n${beginDate}\n`);
             markdown.appendText(`\n${beginDate.substring(0, 16)}\n`);
             markdown.isTrusted = true;
@@ -42,7 +43,8 @@ export const hoverProvider = {
 
         if (hoveredWord.includes('dueDate')) {
             const markdown = new MarkdownString('The due date of the contract.');
-            markdown.appendText('\nAllowed patterns:\n');
+            markdown.appendText('\nAllowed patterns: yyyy-mm-dd HH:mm, yyyy-mm-dd HH:mm:ss\n');
+            markdown.appendText('\nExamples:\n');
             markdown.appendText(`\n${dueDate}\n`);
             markdown.appendText(`\n${dueDate.substring(0, 16)}\n`);
             markdown.isTrusted = true;
@@ -65,7 +67,7 @@ export const hoverProvider = {
         }
 
         if (hoveredWord.includes('parties')) {
-            const markdown = new MarkdownString('The parties of the contract.');
+            const markdown = new MarkdownString('An entity (typically an enterprise or a human) that agrees with another to sign an agreement with clauses that stipulate terms and conditions.');
             markdown.appendText('\nExample:\n');
             markdown.appendCodeblock(
                 [
@@ -80,7 +82,7 @@ export const hoverProvider = {
         }
 
         if (hoveredWord.includes('clauses')) {
-            const markdown = new MarkdownString('The clauses of the contract.');
+            const markdown = new MarkdownString('A statement that stipulates one or more Rights, Obligations and Prohibitions that the parties are expected to observe.');
             markdown.appendText('\nExample:\n');
             markdown.appendCodeblock(
                 [
@@ -113,12 +115,12 @@ export const hoverProvider = {
 
         if (hoveredWord.includes('right')) {
             const markdown = new MarkdownString(
-                'A right clause may or may not be enforced.',
+                'An action (operation) that a party can perform if it wishes to and a condition holds. The party is free to execute the action (for example, send a purchase order) but can choose not to without negative consequences for the party. The execution of a right is illegal if the party tries to execute it when the conditions are not satisfied.',
             );
             markdown.appendText('\nExample:\n');
             markdown.appendCodeblock(
                 [
-                    'prohibition clauseName {',
+                    'right clauseName {',
                     '\n\trolePlayer="a role player value"',
                     '\n\toperation="a operation value"',
                     '\n\tterms {',
@@ -133,12 +135,12 @@ export const hoverProvider = {
 
         if (hoveredWord.includes('obligation')) {
             const markdown = new MarkdownString(
-                'An obligation clause must be enforced.',
+                'An action (for example, pay a bill) that a party is expected to execute to comply with the smart contract, when a condition holds. A failure to execute the action that fulfils and obligation results in penalties to be paid by the irresponsible party.',
             );
             markdown.appendText('\nExample:\n');
             markdown.appendCodeblock(
                 [
-                    'prohibition clauseName {',
+                    'obligation clauseName {',
                     '\n\trolePlayer="a role player value"',
                     '\n\toperation="a operation value"',
                     '\n\tterms {',
@@ -153,7 +155,7 @@ export const hoverProvider = {
 
         if (hoveredWord.includes('prohibition')) {
             const markdown = new MarkdownString(
-                'A prohibition clause, if enforced, invalidates the contract.',
+                'An action that a party is not expected to execute when certain conditions hold unless it wishes to take the risk of being penalised.',
             );
             markdown.appendText('\nExample:\n');
             markdown.appendCodeblock(

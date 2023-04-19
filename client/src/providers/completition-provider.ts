@@ -73,7 +73,7 @@ export const completitionProvider = {
         if (!lines?.length || !text.includes('contract')) {
             return [
                 {
-                    label: 'contract #1',
+                    label: 'contract',
                     document: 'A sample contract',
                     detail: 'A sample contract',
                     insertText: templateContract1,
@@ -84,7 +84,7 @@ export const completitionProvider = {
                     },
                 },
                 {
-                    label: 'contract #2',
+                    label: 'contract',
                     document: 'A complete contract',
                     detail: 'A complete contract',
                     insertText: templateContract2,
