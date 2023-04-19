@@ -1,0 +1,24 @@
+{
+	"name": "jabuti-lang-lsp-server",
+	"description": "Language server for Jabuti Language.",
+	"version": "0.0.1",
+	"author": "Grupo de Computação Aplicada (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
+	},
+	"dependencies": {
+		"vscode-languageserver": "^7.0.0",
+		"vscode-languageserver-textdocument": "^1.0.4",
+		"jabuti-dsl-language-antlr-v3": "^1.0.0",
+		"antlr4ts": "^0.5.0-alpha.4"
+	},
+	"scripts": {},
+	"devDependencies": {
+		"@types/vscode": "^1.76.0"
+	}
+}

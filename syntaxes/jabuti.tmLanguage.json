@@ -1,0 +1,72 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Jabuti Lang",
+	"patterns": [
+		{
+			"include": "#contract"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#attributes"
+		},
+		{
+			"include": "#entity"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#teste"
+		},
+		{
+			"include": "#comment.block"
+		}
+	],
+	"repository": {
+		"attributes": {
+			"patterns": [{
+				"name": "entity.name.function",
+				"match": "\\b(dates|parties|clauses|variables|right|terms|obligation|prohibition)\\b"
+			}]
+		},
+		"teste": {
+			"patterns": [{
+				"name": "support.function",
+				"match": "\\b(MessageContent|MaxNumberOfOperation|TimeInterval|WeekDaysInterval|onBreach|log|Timeout)\\b"
+			}]
+		},
+		"entity": {
+			"patterns": [{
+				"name": "entity.name.tag",
+				"match": "\\b(beginDate|dueDate|application|process|rolePlayer|operation|request|response)\\b"
+			}]
+		},
+		"contract": {
+			"patterns": [{
+				"name": "entity.name.class",
+				"match": "\\b(contract)\\b"
+			}]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line",
+					"match": "//.*"
+				}
+			]
+		},
+		"comment.block": {
+			"begin": "/\\*",
+			"end": "\\*/",
+			"name": "comment.block"
+		},
+		"strings": {
+			"name": "string.quoted.double",
+			"begin": "\"",
+			"end": "\""
+		}
+	},
+	"scopeName": "source.jabuti"
+}

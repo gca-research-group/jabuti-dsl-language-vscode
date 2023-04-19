@@ -1,0 +1,169 @@
+{
+	"Contract snippet": {
+		"prefix": "contract",
+		"body": [
+			"contract ${1:ContractNameExample} {",
+			"\tdates {",
+			"\t\tbeginDate = ${2:0000-00-00 00:00:00}",
+			"\t\tdueDate = ${3:0000-00-00 00:00:00}",
+			"\t}",			
+			"\tparties {",
+			"\t\tapplication = ${4:\"creditAgency\"}",
+			"\t\tprocess = ${5:\"integrationProcess\"}",
+			"\t}",
+			"\tclauses {",
+			"\t\tright ${6:rightTerm} {",
+			"\t\t\t//Setting the limit operation by day and the number of user by request",
+			"\t\t\trolePlayer = ${7:process}",
+			"\t\t\toperation = ${8:poll}",
+			"\t\t\tterms {",                                               
+			"\t\t\t\tMaxNumberOfOperation(${9:1000} per ${10:Second}),",
+			"\t\t\t\tMessageContent(${11:\"count(//CPF)\" == \"1\"})",
+			"\t\t\t}",
+			"\t\t\tonBreach(log(${12:\"Request limit by day exceeded or inconsistent message content\"}))",
+			"\t\t}",
+			"\t\tprohibition ${13:prohibitionTerm} {",
+			"\t\t\t//\"Setting the times that when it is prohibited to send a request\"",
+			"\t\t\trolePlayer = ${14:process}",
+			"\t\t\toperation = ${15:request}",
+			"\t\t\tterms {",
+			"\t\t\t\tTimeInterval(${16:00:00:00 to 24:00:00})",
+			"\t\t\t}",
+			"\t\t\tonBreach(log(${17:\"Request made outside of allowed hours\"}))",
+			"\t\t}",
+			"\t\tobligation ${18:obligationTerm} {",
+			"\t\t\t//Setting the time limit for responding to a resquest",
+			"\t\t\trolePlayer = ${19:application}",
+			"\t\t\toperation = ${20:response}",
+			"\t\t\tterms {",
+			"\t\t\t\tTimeout(${21:60})",
+			"\t\t\t}",
+			"\t\t\tonBreach(log(${22:\"Timeout for replying has been exceeded\"}))",
+			"\t\t}",
+			"\t}",
+			"}"
+		],
+	  	"description": "A contract snippet."
+	},
+	"Contract dates snippet": {
+		"prefix": "dates",
+		"body": [
+			"dates {",
+			"\tbeginDate = ${2:0000-00-00 00:00:00}",
+			"\tdueDate = ${3:0000-00-00 00:00:00}",
+			"}"
+		],
+	  	"description": "A contract dates snippet."
+	},
+	"Contract parties snippet": {
+		"prefix": "parties",
+		"body": [		
+			"parties {",
+			"\tapplication = ${4:\"creditAgency\"}",
+			"\tprocess = ${5:\"integrationProcess\"}",
+			"}"
+		],
+	  	"description": "A contract parties snippet."
+	},
+	"Contract clauses snippet": {
+		"prefix": "clauses",
+		"body": [
+			"clauses {",
+			"\tright ${6:rightTerm} {",
+			"\t\t//Setting the limit operation by day and the number of user by request",
+			"\t\trolePlayer = ${7:process}",
+			"\t\toperation = ${8:poll}",
+			"\t\tterms {",                                               
+			"\t\t\tMaxNumberOfOperation(${9:1000} per ${10:Second}),",
+			"\t\t\tMessageContent(${11:\"count(//CPF)\" == \"1\"})",
+			"\t\t}",
+			"\t\tonBreach(log(${12:\"Request limit by day exceeded or inconsistent message content\"}))",
+			"\t}",
+			"\tprohibition ${13:prohibitionTerm} {",
+			"\t\t//\"Setting the times that when it is prohibited to send a request\"",
+			"\t\trolePlayer = ${14:process}",
+			"\t\toperation = ${15:request}",
+			"\t\tterms {",
+			"\t\t\tTimeInterval(${16:00:00:00 to 24:00:00})",
+			"\t\t}",
+			"\t\tonBreach(log(${17:\"Request made outside of allowed hours\"}))",
+			"\t}",
+			"\tobligation ${18:obligationTerm} {",
+			"\t\t//Setting the time limit for responding to a resquest",
+			"\t\trolePlayer = ${19:application}",
+			"\t\toperation = ${20:response}",
+			"\t\tterms {",
+			"\t\t\tTimeout(${21:60})",
+			"\t\t}",
+			"\t\tonBreach(log(${22:\"Timeout for replying has been exceeded\"}))",
+			"\t}",
+			"}"
+		],
+	  	"description": "A contract clauses snippet."
+	},
+	"Contract type clause snippet": {
+		"prefix": ["right", "prohibition", "obligation"],
+		"body": [
+			"${1:right} ${2:rightTerm} {",
+			"\t//Setting the limit operation by day and the number of user by request",
+			"\trolePlayer = ${3:process}",
+			"\toperation = ${4:poll}",
+			"\tterms {",                          
+			"\t\tMaxNumberOfOperation(${5:1000} per ${6:Second}),",
+			"\t\tMessageContent(${7:\"count(//CPF)\" == \"1\"})",
+			"\t}",
+			"\tonBreach(log(${8:\"Request limit by day exceeded or inconsistent message content\"}))",
+			"}"
+		],
+	  	"description": "A contract type clause snippet."
+	},
+	"Contract log snippet": {
+		"prefix": "log",
+		"body": [
+			"log(\"${1}\")"
+		],
+	  	"description": "A contract log snippet."
+	},
+	"Contract WeekDaysInterval snippet": {
+		"prefix": "WeekDaysInterval",
+		"body": [
+			"WeekDaysInterval(${1})"
+		],
+	  	"description": "A WeekDaysInterval snippet."
+	},
+	"Contract TimeInterval snippet": {
+		"prefix": "TimeInterval",
+		"body": [
+			"TimeInterval(${1})"
+		],
+	  	"description": "A TimeInterval snippet."
+	},
+	"Contract Timeout snippet": {
+		"prefix": "Timeout",
+		"body": [
+			"Timeout(${1})"
+		],
+	  	"description": "A Timeout snippet."
+	},
+	"Contract MaxNumberOfOperation snippet": {
+		"prefix": "MaxNumberOfOperation",
+		"body": [
+			"MaxNumberOfOperation(${1})"
+		],
+	  	"description": "A MaxNumberOfOperation snippet."
+	},
+	"Contract MessageContent snippet": {
+		"prefix": "MessageContent",
+		"body": [
+			"MessageContent(\"${1}\")"
+		],
+	  	"description": "A MessageContent snippet."
+	},
+	"Contract onBreach snippet": {
+		"prefix": "onBreach",
+		"body": [
+			"onBreach(${1:log(\"${2}\")})"
+		],
+	  	"description": "onBreach snippet."
+	}
+  }

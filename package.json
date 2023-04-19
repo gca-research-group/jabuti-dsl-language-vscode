@@ -1,0 +1,87 @@
+{
+	"name": "jabuti-language",
+	"displayName": "Jabuti Language",
+	"description": "Jabuti language extension",
+	"icon": "turtle.png",
+	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
+	"license": "MIT",
+	"version": "0.0.8",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
+	},
+	"publisher": "gca-unijui",
+	"categories": [],
+	"keywords": [
+		"dsl",
+		"smart contracts",
+		"jabuti",
+		"unijui"
+	],
+	"engines": {
+		"vscode": "^1.74.0"
+	},
+	"activationEvents": [],
+	"main": "./client/out/extension",
+	"contributes": {
+		"configuration": {
+			"properties": {
+				"languageServerExample.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 1,
+					"description": "Controls the maximum number of problems produced by the server."
+				}
+			}
+		},
+		"languages": [
+			{
+				"id": "jabuti",
+				"aliases": [
+					"Jabuti Lang",
+					"jabuti"
+				],
+				"extensions": [
+					".jabuti"
+				],
+				"configuration": "./language-configuration.json",
+				"icon": {
+					"light": "./turtle.png",
+					"dark": "./turtle.png"
+				}
+			}
+		],
+		"grammars": [
+			{
+				"language": "jabuti",
+				"scopeName": "source.jabuti",
+				"path": "./syntaxes/jabuti.tmLanguage.json"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
+		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"test": "sh ./scripts/e2e.sh",
+		"package": "tsc -b && vsce package"
+	},
+	"devDependencies": {
+		"@types/mocha": "^9.1.0",
+		"@types/node": "^16.11.7",
+		"@typescript-eslint/eslint-plugin": "^5.42.0",
+		"@typescript-eslint/parser": "^5.42.0",
+		"eslint": "^8.26.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-prettier": "^4.2.1",
+		"mocha": "^9.2.1",
+		"prettier": "^2.8.7",
+		"typescript": "^4.9.4"
+	},
+	"dependencies": {
+		"antlr4ts": "^0.5.0-alpha.4"
+	}
+}
