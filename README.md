@@ -34,7 +34,6 @@ $ npm run package
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
 
-
 ## License
 
 Copyright © 2023 [The Applied Computing Research Group (GCA)](https://github.com/gca-research-group).<br />

@@ -7,6 +7,9 @@
 	"engines": {
 		"node": "*"
 	},
+	"capabilities" : {
+        "hoverProvider" : "true"
+    },
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"

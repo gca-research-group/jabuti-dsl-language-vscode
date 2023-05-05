@@ -1,15 +1,35 @@
+# .vscode/**
+# **/*.ts
+# **/*.map
+# **/*.vsix
+# **/*.svg
+# .gitignore
+# .eslintignore
+# .eslintrc.js
+# .prettierrc
+# **/tsconfig.json
+# **/tsconfig.base.json
+# contributing.md
+# .travis.yml
+# **/test/**
+# client/testFixture/**
+# !client/node_modules/vscode-jsonrpc/**
+# !client/node_modules/vscode-languageclient/**
+# !client/node_modules/vscode-languageserver-protocol/**
+# !client/node_modules/vscode-languageserver-types/**
+# !client/node_modules/{minimatch,brace-expansion,concat-map,balanced-match}/**
+# !client/node_modules/{semver,lru-cache,yallist}/**
 .vscode/**
-**/*.ts
-**/*.map
+client/**
+node_modules/**
+server/**
 .gitignore
-**/tsconfig.json
-**/tsconfig.base.json
-contributing.md
-.travis.yml
-client/node_modules/**
-!client/node_modules/vscode-jsonrpc/**
-!client/node_modules/vscode-languageclient/**
-!client/node_modules/vscode-languageserver-protocol/**
-!client/node_modules/vscode-languageserver-types/**
-!client/node_modules/{minimatch,brace-expansion,concat-map,balanced-match}/**
-!client/node_modules/{semver,lru-cache,yallist}/**
+.eslintignore
+.eslintrc.js
+.prettierrc
+**/*.svg
+**/*.vsix
+**/*.zip
+**/*.map
+package-lock.json
+tsconfig.json
