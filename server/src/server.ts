@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* --------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
@@ -27,6 +28,7 @@ import {
 
 import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarParser';
 import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarLexer';
+import { hoverProvider } from './providers/hover-provider';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -39,7 +41,7 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 
-class ErrorListener implements ANTLRErrorListener<any> {
+class ErrorListener implements ANTLRErrorListener<unknown> {
     private errors: Diagnostic[] = [];
     syntaxError(
         _recognizer: Recognizer<any, any>,
@@ -96,6 +98,7 @@ connection.onInitialize((params: InitializeParams) => {
             completionProvider: {
                 resolveProvider: true,
             },
+            hoverProvider: true,
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -124,26 +127,26 @@ connection.onInitialized(() => {
 });
 
 // The example settings
-interface ExampleSettings {
+interface Settings {
     maxNumberOfProblems: number;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
+const defaultSettings: Settings = { maxNumberOfProblems: 1000 };
+let globalSettings: Settings = defaultSettings;
 
 // Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
+const documentSettings: Map<string, Thenable<Settings>> = new Map();
 
 connection.onDidChangeConfiguration(change => {
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();
     } else {
-        globalSettings = <ExampleSettings>(
-            (change.settings.languageServerExample || defaultSettings)
+        globalSettings = <Settings>(
+            (change.settings.jabutiDSLServer || defaultSettings)
         );
     }
 
@@ -151,7 +154,7 @@ connection.onDidChangeConfiguration(change => {
     documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
+function getDocumentSettings(resource: string): Thenable<Settings> {
     if (!hasConfigurationCapability) {
         return Promise.resolve(globalSettings);
     }
@@ -159,7 +162,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
     if (!result) {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
-            section: 'languageServerExample',
+            section: 'jabutiDSLServer',
         });
         documentSettings.set(resource, result);
     }
@@ -195,10 +198,14 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     parser.addErrorListener(errorListener);
 
     parser.contract();
-    const diagnostics = errorListener.getErrors().slice(0, settings?.maxNumberOfProblems ?? 1);
-    const extractTokenError = function(text: string, character?: number) {
-        if(character) {
-            return text
+
+    const diagnostics = errorListener
+        .getErrors()
+        .slice(0, settings?.maxNumberOfProblems ?? 1);
+
+    const extractTokenError = function (str: string, character?: number) {
+        if (character) {
+            return str
                 .substring(0, character)
                 .replace('=', '')
                 .replace('(', '')
@@ -211,7 +218,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
                 .split(/\s/)
                 .pop();
         }
-        return text
+        return str
             .replace('=', '')
             .replace('(', '')
             .replace(')', '')
@@ -222,7 +229,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
             .trim()
             .split(/\s/)
             .pop();
-    }
+    };
 
     diagnostics.map((diagnostic: Diagnostic) => {
         const range = diagnostic.range;
@@ -251,7 +258,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
                     process = false;
                 }
 
-                tokenError =  extractTokenError(lines[currentLine]);
+                tokenError = extractTokenError(lines[currentLine]);
 
                 if (tokenError?.endsWith(',') || tokenError?.endsWith(')'))
                     tokenError = undefined;
@@ -261,7 +268,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
             if (tokenError && !diagnostic.message.match(/^extraneous input/)) {
                 let initialCharacter = lines[currentLine].lastIndexOf(tokenError);
-                initialCharacter = initialCharacter >= 0 ? initialCharacter : 0
+                initialCharacter = initialCharacter >= 0 ? initialCharacter : 0;
                 diagnostic.range = {
                     start: {
                         line: currentLine,
@@ -307,6 +314,44 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
         return diagnostic;
     });
+
+    const beginDateText = text.match(
+        /beginDate[\s|\t]*=[\s|\t]*(\/|:|-|\d|\s|\t){1,}/,
+    );
+    const dueDateText = text.match(/dueDate[\s|\t]*=[\s|\t]*(\/|:|-|\d|\s|\t){1,}/);
+
+    if (beginDateText && dueDateText) {
+        const beginDate = beginDateText[0]
+            .split('=')[1]
+            .replace(/(\s|\t){2,}/g, ' ')
+            .trim();
+        const dueDate = dueDateText[0]
+            .split('=')[1]
+            .replace(/(\s|\t){2,}/g, ' ')
+            .trim();
+        if (new Date(dueDate) < new Date(beginDate)) {
+            const message = 'dueDate should be greater than beginDate';
+            const lines = text.split(/\n/);
+            const line = lines.findIndex(item => item.includes('dueDate'));
+            const charPositionDueDate = lines[line].indexOf('dueDate');
+            diagnostics.push({
+                severity: DiagnosticSeverity.Error,
+                range: {
+                    start: {
+                        line: line,
+                        character: charPositionDueDate,
+                    },
+                    end: {
+                        line: line,
+                        character: charPositionDueDate + 7,
+                    },
+                },
+                message,
+                source: 'Jabuti Language',
+            });
+        }
+    }
+
     // Send the computed diagnostics to VSCode.
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
@@ -315,10 +360,20 @@ connection.onDidChangeWatchedFiles(_change => {
     // Monitored files have change in VSCode
     connection.console.log('We received an file change event');
 });
+
 connection.onCompletion(
     (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => [],
 );
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => item);
+
+connection.onHover((params: TextDocumentPositionParams) => {
+    const text = documents.get(params.textDocument.uri);
+
+    if (!text) {
+        return { contents: [] };
+    }
+
+    return hoverProvider.provideHover(text, params.position);
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
