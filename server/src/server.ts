@@ -15,6 +15,7 @@ import {
     TextDocumentPositionParams,
     TextDocumentSyncKind,
     InitializeResult,
+    DocumentSymbolParams,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -30,6 +31,7 @@ import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGra
 import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarLexer';
 import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
+import { symbolProvider } from './providers/symbol-provider';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -100,6 +102,8 @@ connection.onInitialize((params: InitializeParams) => {
                 resolveProvider: true,
             },
             hoverProvider: true,
+            documentSymbolProvider: true,
+            definitionProvider: true,
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -362,29 +366,36 @@ connection.onDidChangeWatchedFiles(_change => {
     connection.console.log('We received an file change event');
 });
 
-connection.onCompletion(
-    (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-        const text = documents.get(textDocumentPosition.textDocument.uri);
+connection.onCompletion((params: TextDocumentPositionParams): CompletionItem[] => {
+    const text = documents.get(params.textDocument.uri);
 
-        if (!text) {
-            return [];
-        }
+    if (!text) {
+        return [];
+    }
 
-        return completitionProvider.provideCompletionItems(
-            text,
-            textDocumentPosition.position,
-        );
-    },
-);
+    return completitionProvider.provideCompletionItems(text, params.position);
+});
 
-connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
-    const text = documents.get(textDocumentPosition.textDocument.uri);
+connection.onHover((params: TextDocumentPositionParams) => {
+    const text = documents.get(params.textDocument.uri);
 
     if (!text) {
         return { contents: [] };
     }
 
-    return hoverProvider.provideHover(text, textDocumentPosition.position);
+    return hoverProvider.provideHover(text, params.position);
+});
+
+connection.onDocumentSymbol((params: DocumentSymbolParams) => {
+    const text = documents.get(params.textDocument.uri);
+    if (!text) {
+        return [];
+    }
+    console.log(
+        '[provideDocumentSymbols]',
+        symbolProvider.provideDocumentSymbols(text),
+    );
+    return symbolProvider.provideDocumentSymbols(text);
 });
 
 // Make the text document manager listen on the connection

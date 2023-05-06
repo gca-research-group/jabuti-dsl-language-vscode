@@ -19,14 +19,10 @@ import {
     ServerOptions,
     TransportKind,
 } from 'vscode-languageclient/node';
-import { symbolProvider } from './providers/symbol-provider';
 
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(
-        languages.registerDocumentSymbolProvider('jabuti', symbolProvider),
-    );
     context.subscriptions.push(
         languages.registerDefinitionProvider('jabuti', {
             provideDefinition(document, position, token) {
