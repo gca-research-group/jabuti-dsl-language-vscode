@@ -8,11 +8,8 @@ import {
     workspace,
     ExtensionContext,
     languages,
+    Definition,
     Position,
-    SymbolInformation,
-    SymbolKind,
-    Location,
-    DocumentSymbol,
     Range,
 } from 'vscode';
 
@@ -22,7 +19,6 @@ import {
     ServerOptions,
     TransportKind,
 } from 'vscode-languageclient/node';
-import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
 
@@ -33,16 +29,47 @@ export function activate(context: ExtensionContext) {
         languages.registerCompletionItemProvider('jabuti', completitionProvider),
     );
     context.subscriptions.push(
-        languages.registerHoverProvider('jabuti', hoverProvider),
-    );
-    context.subscriptions.push(
         languages.registerDocumentSymbolProvider('jabuti', symbolProvider),
     );
+    context.subscriptions.push(
+        languages.registerDefinitionProvider('jabuti', {
+            provideDefinition(document, position, token) {
+                const word = document
+                    .getText(document.getWordRangeAtPosition(position))
+                    .replace(/(\s|\t){1,}/g, '');
 
-    // The server is implemented in node
-    const serverModule = context.asAbsolutePath(
-        path.join('server', 'out', 'server.js'),
+                const APPLICATION = 'application';
+                const PROCESS = 'process';
+
+                if (![APPLICATION, PROCESS].includes(word)) return;
+
+                const text = document.getText();
+                const lines = text.split('\n');
+                const index = lines.findIndex(item => {
+                    const replaced = item.replace(/(\s|\t){1,}/g, '');
+                    return replaced.includes(`${word}=`);
+                });
+
+                if (index == -1) return;
+
+                const line = lines[index];
+
+                const charPosition = line.indexOf(word);
+
+                const start = new Position(index, charPosition);
+                const end = new Position(index, charPosition + word.length);
+                const range = new Range(start, end);
+                const definition: Definition = {
+                    uri: document.uri,
+                    range,
+                };
+
+                return definition;
+            },
+        }),
     );
+    // The server is implemented in node
+    const serverModule = context.asAbsolutePath(path.join('dist', 'server.js'));
 
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
