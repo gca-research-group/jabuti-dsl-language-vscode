@@ -29,6 +29,7 @@ import {
 import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarParser';
 import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarLexer';
 import { hoverProvider } from './providers/hover-provider';
+import { completitionProvider } from './providers/completition-provider';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -362,17 +363,28 @@ connection.onDidChangeWatchedFiles(_change => {
 });
 
 connection.onCompletion(
-    (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => [],
+    (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+        const text = documents.get(textDocumentPosition.textDocument.uri);
+
+        if (!text) {
+            return [];
+        }
+
+        return completitionProvider.provideCompletionItems(
+            text,
+            textDocumentPosition.position,
+        );
+    },
 );
 
-connection.onHover((params: TextDocumentPositionParams) => {
-    const text = documents.get(params.textDocument.uri);
+connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
+    const text = documents.get(textDocumentPosition.textDocument.uri);
 
     if (!text) {
         return { contents: [] };
     }
 
-    return hoverProvider.provideHover(text, params.position);
+    return hoverProvider.provideHover(text, textDocumentPosition.position);
 });
 
 // Make the text document manager listen on the connection

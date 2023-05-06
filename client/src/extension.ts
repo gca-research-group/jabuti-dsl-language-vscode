@@ -19,15 +19,11 @@ import {
     ServerOptions,
     TransportKind,
 } from 'vscode-languageclient/node';
-import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
 
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(
-        languages.registerCompletionItemProvider('jabuti', completitionProvider),
-    );
     context.subscriptions.push(
         languages.registerDocumentSymbolProvider('jabuti', symbolProvider),
     );
