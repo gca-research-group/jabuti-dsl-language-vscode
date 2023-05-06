@@ -16,6 +16,7 @@ import {
     TextDocumentSyncKind,
     InitializeResult,
     DocumentSymbolParams,
+    DefinitionParams,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -32,6 +33,7 @@ import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGram
 import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
+import { definitionProvider } from './providers/definition-provider';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -391,11 +393,15 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
     if (!text) {
         return [];
     }
-    console.log(
-        '[provideDocumentSymbols]',
-        symbolProvider.provideDocumentSymbols(text),
-    );
     return symbolProvider.provideDocumentSymbols(text);
+});
+
+connection.onDefinition((params: DefinitionParams) => {
+    const text = documents.get(params.textDocument.uri);
+    if (!text) {
+        return [];
+    }
+    return definitionProvider.provideDefinition(text, params.position);
 });
 
 // Make the text document manager listen on the connection

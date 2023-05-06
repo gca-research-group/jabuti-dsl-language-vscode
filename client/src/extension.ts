@@ -23,43 +23,6 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(
-        languages.registerDefinitionProvider('jabuti', {
-            provideDefinition(document, position, token) {
-                const word = document
-                    .getText(document.getWordRangeAtPosition(position))
-                    .replace(/(\s|\t){1,}/g, '');
-
-                const APPLICATION = 'application';
-                const PROCESS = 'process';
-
-                if (![APPLICATION, PROCESS].includes(word)) return;
-
-                const text = document.getText();
-                const lines = text.split('\n');
-                const index = lines.findIndex(item => {
-                    const replaced = item.replace(/(\s|\t){1,}/g, '');
-                    return replaced.includes(`${word}=`);
-                });
-
-                if (index == -1) return;
-
-                const line = lines[index];
-
-                const charPosition = line.indexOf(word);
-
-                const start = new Position(index, charPosition);
-                const end = new Position(index, charPosition + word.length);
-                const range = new Range(start, end);
-                const definition: Definition = {
-                    uri: document.uri,
-                    range,
-                };
-
-                return definition;
-            },
-        }),
-    );
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(path.join('dist', 'server.js'));
 
