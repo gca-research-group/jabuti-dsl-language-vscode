@@ -18,7 +18,11 @@
 
 - Install from vscode marketplace (https://marketplace.visualstudio.com/items?itemName=gca-unijui.jabuti-language)
 - Create a file with .jabuti extension
-- Press ctrl + space for code snippets 
+- Press ctrl + space for code snippets
+
+## Tool demo
+
+In [this link](--) we provide a short video with the usage of the tool. 
 
 ## Generate vsix package
 
