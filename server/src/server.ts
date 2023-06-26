@@ -368,6 +368,8 @@ connection.onDidChangeWatchedFiles(_change => {
     connection.console.log('We received an file change event');
 });
 
+connection.onCompletionResolve((item: CompletionItem): CompletionItem => item);
+
 connection.onCompletion((params: TextDocumentPositionParams): CompletionItem[] => {
     const text = documents.get(params.textDocument.uri);
 
@@ -390,17 +392,21 @@ connection.onHover((params: TextDocumentPositionParams) => {
 
 connection.onDocumentSymbol((params: DocumentSymbolParams) => {
     const text = documents.get(params.textDocument.uri);
+
     if (!text) {
         return [];
     }
+
     return symbolProvider.provideDocumentSymbols(text);
 });
 
 connection.onDefinition((params: DefinitionParams) => {
     const text = documents.get(params.textDocument.uri);
+
     if (!text) {
         return [];
     }
+
     return definitionProvider.provideDefinition(text, params.position);
 });
 

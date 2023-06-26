@@ -15,22 +15,25 @@ function getEndPosition(position: Position, currentLine: string) {
     return { line: position.line, character };
 }
 
+const getWord = (document: TextDocument, position: Position) => {
+    const line = document.getText().split('\n')[position.line];
+    const start = getStartPosition(position, line);
+    const end = getEndPosition(position, line);
+
+    const range: Range = Range.create(start, end);
+
+    if (!(start && end)) {
+        return;
+    }
+
+    return document.getText(range).replace(/(\s|\t){1,}/g, '');
+};
+
 export const definitionProvider = {
     provideDefinition(document: TextDocument, position: Position) {
-        const _line = document.getText().split('\n')[position.line];
-        const _start = getStartPosition(position, _line);
-        const _end = getEndPosition(position, _line);
+        const word = getWord(document, position);
 
-        const _range: Range = Range.create(_start, _end);
-
-        if (!(_start && _end)) {
-            return;
-        }
-
-        const word = document.getText(_range).replace(/(\s|\t){1,}/g, '');
-        // const word = document
-        //     .getText(document.getWordRangeAtPosition(position))
-        //     .replace(/(\s|\t){1,}/g, '');
+        if (!word) return;
 
         const APPLICATION = 'application';
         const PROCESS = 'process';
