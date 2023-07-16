@@ -1,11 +1,11 @@
 {
 	"name": "jabuti-language",
-	"displayName": "Jabuti Language",
-	"description": "Jabuti language extension",
+	"displayName": "Jabuti CE",
+	"description": "Provides a set of features to support writing smart contracts in Jabuti DSL",
 	"icon": "turtle.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.13",
+	"version": "0.0.15",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -57,7 +57,21 @@
 				"scopeName": "source.jabuti",
 				"path": "./syntaxes/jabuti.tmLanguage.json"
 			}
-		]
+		],
+		"commands": [
+			{
+			  "command": "extension.transform_to_solitity",
+			  "title": "Transform to Solidity"
+			}
+		  ],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.transform_to_solitity",
+					"when": "resourceLangId == jabuti"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
@@ -65,7 +79,7 @@
 		"package": "npm run esbuild && vsce package",
 		"esbuild:client": "esbuild ./client/src/extension.ts --bundle --outfile=dist/client.js --external:vscode --format=cjs --platform=node",
 		"esbuild:server": "esbuild ./server/src/server.ts --bundle --outfile=dist/server.js --external:vscode --format=cjs --platform=node",
-		"esbuild": "npm run esbuild:client -- --minify && npm run esbuild:server -- --minify",
+		"esbuild": "npm run esbuild:client && npm run esbuild:server",
 		"install:extension": "code --install-extension"
 	},
 	"devDependencies": {
@@ -83,6 +97,7 @@
 		"typescript": "^4.9.4"
 	},
 	"dependencies": {
-		"antlr4ts": "^0.5.0-alpha.4"
+		"antlr4ts": "^0.5.0-alpha.4",
+		"jabuti-dsl-model-transformation": "^0.0.5-alpha"
 	}
 }

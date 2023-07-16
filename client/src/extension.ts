@@ -12,10 +12,48 @@ import {
     ServerOptions,
     TransportKind,
 } from 'vscode-languageclient/node';
+import * as vscode from 'vscode';
+import * as fs from 'fs';
+import { SolidityParser } from 'jabuti-dsl-model-transformation';
 
 let client: LanguageClient;
 
+const solidityParser = new SolidityParser();
+
 export function activate(context: ExtensionContext) {
+    const transformToSolidityCommand = vscode.commands.registerCommand(
+        'extension.transform_to_solitity',
+        async () => {
+            const editor = vscode.window.activeTextEditor;
+            if (editor) {
+                const currentFilePath = editor.document.uri.fsPath;
+                const fileName = path.basename(
+                    currentFilePath,
+                    path.extname(currentFilePath),
+                );
+                const currentFileDir = path.dirname(currentFilePath);
+                const newFileName = `${fileName}.sol`;
+                const newFilePath = path.join(currentFileDir, newFileName);
+                const currentFileContent = fs.readFileSync(currentFilePath);
+                const fileContentTransformed = solidityParser.parse(
+                    currentFileContent.toString(),
+                );
+
+                fs.writeFileSync(newFilePath, fileContentTransformed.toString());
+
+                const newFileUri = vscode.Uri.file(newFilePath);
+
+                const newFileDocument = await vscode.workspace.openTextDocument(
+                    newFileUri,
+                );
+
+                await vscode.window.showTextDocument(newFileDocument);
+            }
+        },
+    );
+
+    context.subscriptions.push(transformToSolidityCommand);
+
     const serverModule = context.asAbsolutePath(path.join('dist', 'server.js'));
 
     const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
