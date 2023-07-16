@@ -8,11 +8,17 @@ import {
 
 const pad20 = (value: number) => `${value}`.padStart(2, '0');
 const date_initial = new Date();
-const date_initial_formatted = `${date_initial.getFullYear()}-${pad20(
+const date_final = new Date(Date.now() + 3600 * 1000 * 24);
+const beginDate = `${date_initial.getFullYear()}-${pad20(
     date_initial.getMonth() + 1,
 )}-${pad20(date_initial.getDate())} ${pad20(date_initial.getHours())}:${pad20(
     date_initial.getMinutes(),
 )}:${pad20(date_initial.getSeconds())}`;
+const dueDate = `${date_final.getFullYear()}-${pad20(
+    date_final.getMonth() + 1,
+)}-${pad20(date_final.getDate())} ${pad20(date_final.getHours())}:${pad20(
+    date_final.getMinutes(),
+)}:${pad20(date_final.getSeconds())}`;
 
 const findCurrentElement = function (lines: string[], positionLine: number) {
     let element;
@@ -441,23 +447,25 @@ export const completitionProvider = {
             );
         }
 
-        if (
-            validateSubstringElement(
-                element,
-                11,
-                /(beginDate[\s{1,}|\t{1,}]?=)|(dueDate[\s{1,}|\t{1,}]?=)/,
-            )
-        ) {
+        if (validateSubstringElement(element, 11, /(beginDate[\s{1,}|\t{1,}]?=)/)) {
             return buildCompletitionItem(
-                [date_initial_formatted],
+                [beginDate],
                 CompletionItemKind.Value,
-                `\${1:${date_initial_formatted}}`,
+                `\${1:${beginDate}}`,
+            );
+        }
+
+        if (validateSubstringElement(element, 11, /(dueDate[\s{1,}|\t{1,}]?=)/)) {
+            return buildCompletitionItem(
+                [dueDate],
+                CompletionItemKind.Value,
+                `\${1:${dueDate}}`,
             );
         }
 
         if (validateSubstringElement(element, 13, /application[\s{1,}|\t{1,}]?=/)) {
             return buildCompletitionItem(
-                ['Application name'],
+                ['application name'],
                 CompletionItemKind.Value,
                 '"${1:Application name}"',
             );
@@ -465,7 +473,7 @@ export const completitionProvider = {
 
         if (validateSubstringElement(element, 9, /process[\s{1,}|\t{1,}]?=/)) {
             return buildCompletitionItem(
-                ['Process name'],
+                ['process name'],
                 CompletionItemKind.Value,
                 '"${1:Process name}"',
             );
