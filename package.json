@@ -5,7 +5,7 @@
 	"icon": "turtle.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.15",
+	"version": "0.0.19",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -76,10 +76,10 @@
 	"scripts": {
 		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"package": "npm run esbuild && vsce package",
-		"esbuild:client": "esbuild ./client/src/extension.ts --bundle --outfile=dist/client.js --external:vscode --format=cjs --platform=node",
-		"esbuild:server": "esbuild ./server/src/server.ts --bundle --outfile=dist/server.js --external:vscode --format=cjs --platform=node",
-		"esbuild": "npm run esbuild:client && npm run esbuild:server",
+		"package": "npm run build && vsce package",
+		"esbuild:client": "esbuild ./client/src/extension.ts --bundle --outfile=dist/client.js --external:vscode --format=cjs --platform=node --minify",
+		"esbuild:server": "esbuild ./server/src/server.ts --bundle --outfile=dist/server.js --external:vscode --format=cjs --platform=node --minify",
+		"build": "npm run esbuild:client && npm run esbuild:server",
 		"install:extension": "code --install-extension"
 	},
 	"devDependencies": {
@@ -98,6 +98,6 @@
 	},
 	"dependencies": {
 		"antlr4ts": "^0.5.0-alpha.4",
-		"jabuti-dsl-model-transformation": "^0.0.5-alpha"
+		"jabuti-dsl-model-transformation": "^0.0.7-alpha"
 	}
 }
