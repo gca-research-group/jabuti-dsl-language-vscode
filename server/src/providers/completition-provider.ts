@@ -202,8 +202,20 @@ export const completitionProvider = {
                 if (isREmpty && hasRTo) {
                     return [
                         {
-                            label: 'Second',
+                            label: 'MaxNumberOfOperation',
                             insertText: '${1|Second,Hour,Minute,Day,Week,Month|}',
+                            insertTextFormat: InsertTextFormat.Snippet,
+                            kind: CompletionItemKind.Property,
+                        },
+                    ];
+                }
+
+                if (isREmpty && isLEmpty && !hasLTo && !hasRTo) {
+                    return [
+                        {
+                            label: '0 per Second',
+                            insertText:
+                                '${1:0} per ${2|Second,Hour,Minute,Day,Week,Month|}',
                             insertTextFormat: InsertTextFormat.Snippet,
                             kind: CompletionItemKind.Property,
                         },
