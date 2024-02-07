@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="turtle.png" width="200" alt="Jabuti DSL">
+  <img src="light.png" width="200" alt="Jabuti DSL">
   <br>
   Jabuti CE
   <br>

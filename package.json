@@ -2,10 +2,10 @@
 	"name": "jabuti-language",
 	"displayName": "Jabuti CE",
 	"description": "Provides a set of features to support writing smart contracts in Jabuti DSL",
-	"icon": "turtle.png",
+	"icon": "light-128px.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.19",
+	"version": "0.0.31",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -38,7 +38,7 @@
 			{
 				"id": "jabuti",
 				"aliases": [
-					"Jabuti Lang",
+					"Jabuti Language",
 					"jabuti"
 				],
 				"extensions": [
@@ -46,8 +46,8 @@
 				],
 				"configuration": "./language-configuration.json",
 				"icon": {
-					"light": "./turtle.png",
-					"dark": "./turtle.png"
+					"light": "./light-128px.png",
+					"dark": "./dark-128px.png"
 				}
 			}
 		],
@@ -60,14 +60,22 @@
 		],
 		"commands": [
 			{
-			  "command": "extension.transform_to_solitity",
-			  "title": "Transform to Solidity"
+				"command": "extension.transform_to_ethereum_solitity",
+				"title": "Transform to Ethereum (Solidity)"
+			},
+			{
+				"command": "extension.transform_to_hyperledger_golang",
+				"title": "Transform to Hyperledger (Golang)"
 			}
-		  ],
+		],
 		"menus": {
 			"explorer/context": [
 				{
-					"command": "extension.transform_to_solitity",
+					"command": "extension.transform_to_ethereum_solitity",
+					"when": "resourceLangId == jabuti"
+				},
+				{
+					"command": "extension.transform_to_hyperledger_golang",
 					"when": "resourceLangId == jabuti"
 				}
 			]
@@ -77,7 +85,7 @@
 		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
 		"package": "npm run build && vsce package",
-		"esbuild:client": "esbuild ./client/src/extension.ts --bundle --outfile=dist/client.js --external:vscode --format=cjs --platform=node --minify",
+		"esbuild:client": "esbuild ./client/src/extension.ts --bundle --outfile=dist/client.js --external:vscode --external:prettier-plugin-solidity --format=cjs --platform=node --minify",
 		"esbuild:server": "esbuild ./server/src/server.ts --bundle --outfile=dist/server.js --external:vscode --format=cjs --platform=node --minify",
 		"build": "npm run esbuild:client && npm run esbuild:server",
 		"install:extension": "code --install-extension"
@@ -94,10 +102,10 @@
 		"eslint-plugin-prettier": "^4.2.1",
 		"mocha": "^9.2.1",
 		"prettier": "^2.8.7",
-		"typescript": "^4.9.4"
+		"typescript": "^4.9.4",
+		"vsce": "^2.15.0"
 	},
 	"dependencies": {
-		"antlr4ts": "^0.5.0-alpha.4",
-		"jabuti-dsl-model-transformation": "^0.0.7-alpha"
+		"antlr4ts": "^0.5.0-alpha.4"
 	}
 }

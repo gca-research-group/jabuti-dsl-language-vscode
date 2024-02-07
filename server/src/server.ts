@@ -28,8 +28,8 @@ import {
     Recognizer,
 } from 'antlr4ts';
 
-import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarParser';
-import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr-v3/dist/JabutiGrammarLexer';
+import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr/dist/JabutiGrammarParser';
+import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr/dist/JabutiGrammarLexer';
 import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';

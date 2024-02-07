@@ -17,7 +17,7 @@
 	"dependencies": {
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.4",
-		"jabuti-dsl-language-antlr-v3": "^1.0.0",
+		"jabuti-dsl-language-antlr": "^1.0.0",
 		"antlr4ts": "^0.5.0-alpha.4"
 	},
 	"scripts": {},
