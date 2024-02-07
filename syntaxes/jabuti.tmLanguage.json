@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Jabuti Lang",
+	"name": "Jabuti Language",
 	"patterns": [
 		{
 			"include": "#contract"
@@ -18,9 +18,6 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#teste"
-		},
-		{
 			"include": "#comment.block"
 		}
 	],
@@ -34,13 +31,13 @@
 		"teste": {
 			"patterns": [{
 				"name": "support.function",
-				"match": "\\b(MessageContent|MaxNumberOfOperation|TimeInterval|WeekDaysInterval|onBreach|log|Timeout)\\b"
+				"match": "\\b(MessageContent|MaxNumberOfOperation|SessionInterval|TimeInterval|WeekDaysInterval|onBreach|log|Timeout)\\b"
 			}]
 		},
 		"entity": {
 			"patterns": [{
 				"name": "entity.name.tag",
-				"match": "\\b(beginDate|dueDate|application|process|rolePlayer|operation|request|response)\\b"
+				"match": "\\b(beginDate|dueDate|application|process|rolePlayer|operation|request|response|push|poll|read|write)\\b"
 			}]
 		},
 		"contract": {
