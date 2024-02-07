@@ -58,7 +58,9 @@ export const hoverProvider = {
                 kind: MarkupKind.PlainText,
                 value: [
                     'The begin date of the contract.',
-                    'Allowed patterns: yyyy-mm-dd HH:mm, yyyy-mm-dd HH:mm:ss',
+                    'Allowed patterns: ',
+                    'yyyy-mm-dd HH:mm',
+                    'yyyy-mm-dd HH:mm:ss',
                     'Examples:',
                     `${beginDate}`,
                     `${beginDate.substring(0, 16)}`,
@@ -75,7 +77,9 @@ export const hoverProvider = {
                 kind: MarkupKind.PlainText,
                 value: [
                     'The due date of the contract.',
-                    'Allowed patterns: yyyy-mm-dd HH:mm, yyyy-mm-dd HH:mm:ss',
+                    'Allowed patterns: ',
+                    'yyyy-mm-dd HH:mm',
+                    'yyyy-mm-dd HH:mm:ss',
                     'Examples:',
                     `${dueDate}`,
                     `${dueDate.substring(0, 16)}`,
