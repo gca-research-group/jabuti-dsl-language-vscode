@@ -28,23 +28,20 @@ import {
     Recognizer,
 } from 'antlr4ts';
 
-import { JabutiGrammarParser } from 'jabuti-dsl-language-antlr/dist/JabutiGrammarParser';
-import { JabutiGrammarLexer } from 'jabuti-dsl-language-antlr/dist/JabutiGrammarLexer';
+import { JabutiGrammarParser } from 'jabuti-dsl-grammar-antlr/JabutiGrammarParser';
+import { JabutiGrammarLexer } from 'jabuti-dsl-grammar-antlr/JabutiGrammarLexer';
 import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
 import { definitionProvider } from './providers/definition-provider';
 
-// Create a connection for the server, using Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
-const connection = createConnection(ProposedFeatures.all);
+import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
 
-// Create a simple text document manager.
-const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
-
-let hasConfigurationCapability = false;
-let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
+import {
+    GrammarParser,
+    SemanticValidor,
+    ValidationError,
+} from 'jabuti-ce-transformation-engine';
 
 class ErrorListener implements ANTLRErrorListener<unknown> {
     private errors: Diagnostic[] = [];
@@ -78,6 +75,17 @@ class ErrorListener implements ANTLRErrorListener<unknown> {
         return this.errors;
     }
 }
+
+// Create a connection for the server, using Node's IPC as a transport.
+// Also include all preview / proposed LSP features.
+const connection = createConnection(ProposedFeatures.all);
+
+// Create a simple text document manager.
+const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+
+let hasConfigurationCapability = false;
+let hasWorkspaceFolderCapability = false;
+let hasDiagnosticRelatedInformationCapability = false;
 
 connection.onInitialize((params: InitializeParams) => {
     const capabilities = params.capabilities;
@@ -158,7 +166,7 @@ connection.onDidChangeConfiguration(change => {
     }
 
     // Revalidate all open text documents
-    documents.all().forEach(validateTextDocument);
+    // documents.all().forEach(validateTextDocument);
 });
 
 function getDocumentSettings(resource: string): Thenable<Settings> {
@@ -184,187 +192,57 @@ documents.onDidClose(e => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
-    validateTextDocument(change.document);
-});
+    try {
+        const grammarParser = new GrammarParser();
+        grammarParser.parse(change.document.getText());
 
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-    // In this simple example we get the settings for every validate run.
-    const settings = await getDocumentSettings(textDocument.uri);
+        const inputStream = CharStreams.fromString(change.document.getText());
+        const lexer = new JabutiGrammarLexer(inputStream);
+        const tokenStream = new CommonTokenStream(lexer);
+        const parser = new JabutiGrammarParser(tokenStream);
 
-    // The validator creates diagnostics for all uppercase words length 2 and more
-    const text = textDocument.getText();
+        parser.removeErrorListeners();
+        lexer.removeErrorListeners();
 
-    const inputStream = CharStreams.fromString(text);
-    const lexer = new JabutiGrammarLexer(inputStream);
-    lexer.removeErrorListeners();
-    const errorListener = new ErrorListener();
-    lexer.addErrorListener(errorListener);
-    const tokenStream = new CommonTokenStream(lexer);
-    const parser = new JabutiGrammarParser(tokenStream);
-    parser.removeErrorListeners();
-    parser.addErrorListener(errorListener);
+        const errorListener = new ErrorListener();
+        parser.addErrorListener(errorListener);
+        lexer.addErrorListener(errorListener);
 
-    parser.contract();
+        const walker = new ParseTreeWalker();
+        walker.walk(new SemanticValidor(), parser.contract());
 
-    const diagnostics = errorListener
-        .getErrors()
-        .slice(0, settings?.maxNumberOfProblems ?? 1);
-
-    const extractTokenError = function (str: string, character?: number) {
-        if (character) {
-            return str
-                .substring(0, character)
-                .replace('=', '')
-                .replace('(', '')
-                .replace(')', '')
-                .replace(/\s{2,}/, '')
-                .replace(/\t{1,}/, '')
-                .replace('{', '')
-                .replace('}', '')
-                .trim()
-                .split(/\s/)
-                .pop();
-        }
-        return str
-            .replace('=', '')
-            .replace('(', '')
-            .replace(')', '')
-            .replace(/\s{2,}/, '')
-            .replace(/\t{1,}/, '')
-            .replace('{', '')
-            .replace('}', '')
-            .trim()
-            .split(/\s/)
-            .pop();
-    };
-
-    diagnostics.map((diagnostic: Diagnostic) => {
-        const range = diagnostic.range;
-
-        const lines = text.split('\n');
-
-        if (
-            diagnostic.message.match(/missing ({?StringLiteral|Word|Digit)/) ||
-            diagnostic.message.match(/expecting ({?StringLiteral|Digit)/) ||
-            diagnostic.message.match(/(expecting {N|missing {N)/) ||
-            diagnostic.message.match(/(missing {')/) ||
-            diagnostic.message.match(/^extraneous input/) ||
-            diagnostic.message.match(/^mismatched input/)
-        ) {
-            let currentLine = range.start.line;
-            const character = range.start.character;
-
-            let tokenError = extractTokenError(lines[currentLine], character);
-
-            let process = !tokenError;
-
-            while (process) {
-                currentLine--;
-
-                if (currentLine <= 0) {
-                    process = false;
-                }
-
-                tokenError = extractTokenError(lines[currentLine]);
-
-                if (tokenError?.endsWith(',') || tokenError?.endsWith(')'))
-                    tokenError = undefined;
-
-                process = !tokenError;
-            }
-
-            if (tokenError && !diagnostic.message.match(/^extraneous input/)) {
-                let initialCharacter = lines[currentLine].lastIndexOf(tokenError);
-                initialCharacter = initialCharacter >= 0 ? initialCharacter : 0;
-                diagnostic.range = {
-                    start: {
-                        line: currentLine,
-                        character: initialCharacter,
+        connection.sendDiagnostics({
+            uri: change.document.uri,
+            diagnostics: errorListener.getErrors(),
+        });
+    } catch (error) {
+        console.log(error);
+        if (error instanceof ValidationError) {
+            connection.sendDiagnostics({
+                uri: change.document.uri,
+                diagnostics: [
+                    {
+                        severity: DiagnosticSeverity.Error,
+                        range: {
+                            start: {
+                                line: (error.range?.start.line ?? 0) - 1,
+                                character: error.range?.start.character ?? 0,
+                            },
+                            end: {
+                                line: (error.range?.end.line ?? 0) - 1,
+                                character: error.range?.end.character ?? 0,
+                            },
+                        },
+                        message: error.message,
+                        source: 'Jabuti Language',
                     },
-                    end: {
-                        line: currentLine,
-                        character: initialCharacter + (tokenError.length ?? 1),
-                    },
-                };
-            }
-
-            if (tokenError) {
-                if (['right', 'obligation', 'prohibition'].includes(tokenError)) {
-                    tokenError += ' clause';
-                }
-
-                if (diagnostic.message.match(/(expecting {N|missing {N)/)) {
-                    diagnostic.message = `incorrect ${tokenError} value format`;
-                }
-
-                if (diagnostic.message.match(/^missing (StringLiteral|Word)/)) {
-                    diagnostic.message = `expecting ${tokenError} name`;
-                }
-
-                if (
-                    diagnostic.message.match(
-                        /expecting (Digit|{?StringLiteral)|missing ({?StringLiteral|Digit)/,
-                    )
-                ) {
-                    diagnostic.message = `expecting ${tokenError} value`;
-                }
-
-                if (diagnostic.message.match(/missing {'/)) {
-                    diagnostic.message = `expecting ${tokenError} value`;
-                }
-
-                if (diagnostic.message.match(/^(extraneous|mismatched) input/)) {
-                    diagnostic.message = `expecting ${tokenError} function`;
-                }
-            }
-        }
-
-        return diagnostic;
-    });
-
-    const beginDateText = text.match(
-        /beginDate[\s|\t]*=[\s|\t]*(\/|:|-|\d|\s|\t){1,}/,
-    );
-    const dueDateText = text.match(/dueDate[\s|\t]*=[\s|\t]*(\/|:|-|\d|\s|\t){1,}/);
-
-    if (beginDateText && dueDateText) {
-        const beginDate = beginDateText[0]
-            .split('=')[1]
-            .replace(/(\s|\t){2,}/g, ' ')
-            .trim();
-        const dueDate = dueDateText[0]
-            .split('=')[1]
-            .replace(/(\s|\t){2,}/g, ' ')
-            .trim();
-        if (new Date(dueDate) < new Date(beginDate)) {
-            const message = 'dueDate should be greater than beginDate';
-            const lines = text.split(/\n/);
-            const line = lines.findIndex(item => item.includes('dueDate'));
-            const charPositionDueDate = lines[line].indexOf('dueDate');
-            diagnostics.push({
-                severity: DiagnosticSeverity.Error,
-                range: {
-                    start: {
-                        line: line,
-                        character: charPositionDueDate,
-                    },
-                    end: {
-                        line: line,
-                        character: charPositionDueDate + 7,
-                    },
-                },
-                message,
-                source: 'Jabuti Language',
+                ],
             });
         }
     }
-
-    // Send the computed diagnostics to VSCode.
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
+});
 
 connection.onDidChangeWatchedFiles(_change => {
-    // Monitored files have change in VSCode
     connection.console.log('We received an file change event');
 });
 
@@ -410,9 +288,6 @@ connection.onDefinition((params: DefinitionParams) => {
     return definitionProvider.provideDefinition(text, params.position);
 });
 
-// Make the text document manager listen on the connection
-// for open, change and close text document events
 documents.listen(connection);
 
-// Listen on the connection
 connection.listen();

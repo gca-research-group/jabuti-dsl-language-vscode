@@ -7,18 +7,14 @@
 	"engines": {
 		"node": "*"
 	},
-	"capabilities" : {
-        "hoverProvider" : "true"
-    },
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
+	"capabilities": {
+		"hoverProvider": "true"
 	},
 	"dependencies": {
+		"antlr4ts": "^0.5.0-alpha.4",
+		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.1-alpha.tgz",
 		"vscode-languageserver": "^7.0.0",
-		"vscode-languageserver-textdocument": "^1.0.4",
-		"jabuti-dsl-language-antlr": "^1.0.0",
-		"antlr4ts": "^0.5.0-alpha.4"
+		"vscode-languageserver-textdocument": "^1.0.4"
 	},
 	"scripts": {},
 	"devDependencies": {
