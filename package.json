@@ -5,7 +5,7 @@
 	"icon": "light-128px.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.33",
+	"version": "0.0.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
