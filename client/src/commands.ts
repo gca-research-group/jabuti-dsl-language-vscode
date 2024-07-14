@@ -1,13 +1,13 @@
-import {
-    EthereumGolangParser,
-    SolidityParser,
-} from 'jabuti-dsl-model-transformation';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import {
+    HyperledgerFabricGolangFactory,
+    EthereumSolidityFactory,
+} from 'jabuti-ce-transformation-engine';
 
-const solidityParser = new SolidityParser();
-const hyperledgerGolangParser = new EthereumGolangParser();
+const ethereumSolidityParser = new EthereumSolidityFactory();
+const hyperledgerFabricGolangParser = new HyperledgerFabricGolangFactory();
 
 const getCurrentEditor = () => {
     return vscode.window.activeTextEditor;
@@ -26,6 +26,9 @@ const getCurrentFilePath = () => {
 const getFileName = (filePath: string) => {
     return path.basename(filePath, path.extname(filePath));
 };
+
+const outputChannel: vscode.OutputChannel =
+    vscode.window.createOutputChannel('Jabuti CE');
 
 const baseCommand = (
     progressTitle: string,
@@ -68,22 +71,30 @@ const baseCommand = (
     });
 
 export const transformToEthereumSolidityCommand = baseCommand(
-    'Transforming to Ethereum (Solidity)',
+    'Transforming to Ethereum (Solidity) - in development',
     'extension.transform_to_ethereum_solitity',
     async (currentFilePath: string) => {
-        const fileName = getFileName(currentFilePath);
-        const newFileName = `${fileName}.sol`;
+        try {
+            const fileName = getFileName(currentFilePath);
+            const newFileName = `${fileName}.sol`;
 
-        const currentFolderPath = path.dirname(currentFilePath);
-        const newFilePath = path.join(currentFolderPath, newFileName);
+            const currentFolderPath = path.dirname(currentFilePath);
+            const newFilePath = path.join(currentFolderPath, newFileName);
 
-        const currentFileContent = fs.readFileSync(currentFilePath);
+            const currentFileContent = fs.readFileSync(currentFilePath);
 
-        const code = await solidityParser.parse(currentFileContent.toString());
+            const code = await ethereumSolidityParser.run(
+                currentFileContent.toString(),
+            );
 
-        fs.writeFileSync(newFilePath, code);
+            fs.writeFileSync(newFilePath, code);
 
-        return newFilePath;
+            return newFilePath;
+        } catch (error) {
+            outputChannel.appendLine(
+                `[An error occurred during the transformation] ${error}`,
+            );
+        }
     },
 );
 
@@ -91,26 +102,32 @@ export const transformToHyperledgerGolangCommand = baseCommand(
     'Transforming to Hyperldeger (Golang)',
     'extension.transform_to_hyperledger_golang',
     async (currentFilePath: string) => {
-        const currentFileContent = fs.readFileSync(currentFilePath);
+        try {
+            const currentFileContent = fs.readFileSync(currentFilePath);
 
-        const [code, goMod] = hyperledgerGolangParser.parse(
-            currentFileContent.toString(),
-        );
+            const [code, goMod] = hyperledgerFabricGolangParser.run(
+                currentFileContent.toString(),
+            );
 
-        const fileName = getFileName(currentFilePath);
+            const fileName = getFileName(currentFilePath);
 
-        const folderPath = path.join(path.dirname(currentFilePath), fileName);
+            const folderPath = path.join(path.dirname(currentFilePath), fileName);
 
-        if (!fs.existsSync(folderPath)) {
-            fs.mkdirSync(folderPath, { recursive: true });
+            if (!fs.existsSync(folderPath)) {
+                fs.mkdirSync(folderPath, { recursive: true });
+            }
+
+            fs.writeFileSync(path.join(folderPath, `${fileName}.go`), code);
+
+            fs.writeFileSync(path.join(folderPath, 'go.mod'), goMod);
+
+            const newFileUri = path.join(folderPath, `${fileName}.go`);
+
+            return newFileUri;
+        } catch (error) {
+            outputChannel.appendLine(
+                `[An error occurred during the transformation] ${error}`,
+            );
         }
-
-        fs.writeFileSync(path.join(folderPath, `${fileName}.go`), code);
-
-        fs.writeFileSync(path.join(folderPath, 'go.mod'), goMod);
-
-        const newFileUri = path.join(folderPath, `${fileName}.go`);
-
-        return newFileUri;
     },
 );
