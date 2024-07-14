@@ -28,11 +28,11 @@ Main features:
 
 ## Jabuti projetct repositories
 - VSCode based projects
-  - [jabuti-ce-jabuti-dsl-grammar](https://github.com/gca-research-group/jabuti-ce-jabuti-dsl-grammar)
-  - [jabuti-ce-transformation-engine](https://github.com/gca-research-group/jabuti-ce-transformation-engine)
-  - [jabuti-ce-vscode-plugin](https://github.com/gca-research-group/jabuti-ce-vscode-plugin)
+  - [Jabuti DSL Grammar](https://github.com/gca-research-group/jabuti-ce-jabuti-dsl-grammar)
+  - [Transformation Engine](https://github.com/gca-research-group/jabuti-ce-transformation-engine)
+  - [VSCode Plugin](https://github.com/gca-research-group/jabuti-ce-vscode-plugin)
 - XText based project
-  - [dsl-smart-contract-eai](https://github.com/gca-research-group/dsl-smart-contract-eai)
+  - [XText/Xtend implementation](https://github.com/gca-research-group/dsl-smart-contract-eai)
 
 ## Features
 
