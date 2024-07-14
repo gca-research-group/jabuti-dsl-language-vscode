@@ -1,11 +1,11 @@
 {
-	"name": "jabuti-language",
+	"name": "jabuti-ce-vscode-plugin",
 	"displayName": "Jabuti CE",
 	"description": "Provides a set of features to support writing smart contracts in Jabuti DSL",
 	"icon": "light-128px.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.31",
+	"version": "0.0.33",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -13,16 +13,16 @@
 	"publisher": "gca-unijui",
 	"categories": [],
 	"keywords": [
-		"dsl",
-		"smart contracts",
-		"jabuti",
+		"smart contract",
+		"jabuti dsl",
+		"enterprise application integration",
 		"unijui"
 	],
 	"engines": {
 		"vscode": "^1.74.0"
 	},
 	"activationEvents": [],
-	"main": "./dist/client",
+	"main": "dist/client.js",
 	"contributes": {
 		"configuration": {
 			"properties": {
@@ -61,7 +61,7 @@
 		"commands": [
 			{
 				"command": "extension.transform_to_ethereum_solitity",
-				"title": "Transform to Ethereum (Solidity)"
+				"title": "Transform to Ethereum (Solidity) - in development"
 			},
 			{
 				"command": "extension.transform_to_hyperledger_golang",
