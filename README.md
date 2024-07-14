@@ -9,39 +9,37 @@
 
 <h4 align="center">A Visual Studio Code extension for Jabuti DSL.</h4>
 
+<br/>
 
-## How to use
+Jabuti CE is an extension for VSCode that provides support for editing Jabuti DSL smart contracts.
 
-- Install from vscode marketplace (https://marketplace.visualstudio.com/items?itemName=gca-unijui.jabuti-language)
-- Create a file with .jabuti extension
-- Press CTRL + Space for code snippets
+Main features:
+- Code highlighting
+- Autocompletition
+- Code navigation
+- Syntax and semantic validation
+- Documentation on hover
+- Code transformation
 
-## Tool demo
+## Features
 
-In [this link](--) we provide a short video with the usage of the tool. 
+### Code highlighting
+<img src="assets/code-highlighting.png" alt="Autocompletition">
 
-## Generate vsix package
+### Autocompletition
+<img src="assets/autocompletition.gif" alt="Autocompletition">
 
-```bash
-$ npm run package
-```
+### Code navigation
+<img src="assets/code-navigation.gif" alt="Code navigation">
 
-## Contributing
+### Syntax and semantic validation
+<img src="assets/syntax-and-semantic-validation.gif" alt="Syntax and semantic validation">
 
-```bash
-  # Fork it (<https://github.com/gca-research-group/jabuti-dsl-language-vscode>)
+### Documentation on hover
+<img src="assets/documentation-on-hover.gif" alt="Documentation on hover">
 
-  # Create your feature branch
-  $ git checkout -b feature/fooBar
-
-  # Commit your changes 
-  $ git commit -am 'Add some fooBar'
-
-  # Push to the branch
-  $ git push origin feature/fooBar
-  
-  # Create a new Pull Request
-```
+### Code transformation
+<img src="assets/code-transformation.gif" alt="Code transfromation">
 
 ## License
 
