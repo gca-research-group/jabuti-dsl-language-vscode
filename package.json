@@ -2,10 +2,10 @@
 	"name": "jabuti-ce-vscode-plugin",
 	"displayName": "Jabuti CE",
 	"description": "Provides a set of features to support writing smart contracts in Jabuti DSL",
-	"icon": "light-128px.png",
+	"icon": "assets/logo-blue-128.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -46,8 +46,8 @@
 				],
 				"configuration": "./language-configuration.json",
 				"icon": {
-					"light": "./light-128px.png",
-					"dark": "./dark-128px.png"
+					"light": "./assets/logo-blue-128.png",
+					"dark": "./assets/logo-white-128.png"
 				}
 			}
 		],

@@ -1,7 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="light.png#gh-light-mode-only" width="200" alt="Jabuti DSL">
-  <img src="dark.png#gh-dark-mode-only" width="200" alt="Jabuti DSL">
+  <img src="assets/logo-blue-128.png" alt="Jabuti Logo">
   <br>
   Jabuti CE
   <br>
