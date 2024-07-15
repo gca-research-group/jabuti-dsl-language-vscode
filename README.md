@@ -25,7 +25,7 @@ Main features:
 - [On the Need to Use Smart Contracts in Enterprise Application Integration](https://idus.us.es/handle/11441/140199)
 - [Jabuti CE: A Tool for Specifying Smart Contracts in the Domain of Enterprise Application Integration](https://www.scitepress.org/Link.aspx?doi=10.5220/0012413300003645)
 
-## Jabuti projetct repositories
+## Jabuti project repositories
 - VSCode based projects
   - [Jabuti DSL Grammar](https://github.com/gca-research-group/jabuti-ce-jabuti-dsl-grammar)
   - [Transformation Engine](https://github.com/gca-research-group/jabuti-ce-transformation-engine)
