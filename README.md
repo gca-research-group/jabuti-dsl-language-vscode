@@ -30,7 +30,7 @@ Main features:
   - [Jabuti DSL Grammar](https://github.com/gca-research-group/jabuti-ce-jabuti-dsl-grammar)
   - [Transformation Engine](https://github.com/gca-research-group/jabuti-ce-transformation-engine)
   - [VSCode Plugin](https://github.com/gca-research-group/jabuti-ce-vscode-plugin)
-- XText based project
+- Eclipse based project
   - [XText/Xtend implementation](https://github.com/gca-research-group/dsl-smart-contract-eai)
 
 ## Features
