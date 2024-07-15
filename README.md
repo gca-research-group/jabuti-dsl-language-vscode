@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="assets/logo-blue-128.png" alt="Jabuti Logo">
+  <img src="assets/logo-background-256.png" alt="Jabuti Logo">
   <br>
   Jabuti CE
   <br>
