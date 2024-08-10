@@ -27,21 +27,19 @@ import {
     RecognitionException,
     Recognizer,
 } from 'antlr4ts';
+import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
 
-import { JabutiGrammarParser } from 'jabuti-dsl-grammar-antlr/JabutiGrammarParser';
-import { JabutiGrammarLexer } from 'jabuti-dsl-grammar-antlr/JabutiGrammarLexer';
 import { hoverProvider } from './providers/hover-provider';
 import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
 import { definitionProvider } from './providers/definition-provider';
-
-import { ParseTreeWalker } from 'antlr4ts/tree/ParseTreeWalker';
-
 import {
     GrammarParser,
-    SemanticValidor,
+    JabutiGrammarListenerImpl,
     ValidationError,
 } from 'jabuti-ce-transformation-engine';
+import { JabutiGrammarLexer } from 'jabuti-dsl-grammar-antlr/JabutiGrammarLexer';
+import { JabutiGrammarParser } from 'jabuti-dsl-grammar-antlr/JabutiGrammarParser';
 
 class ErrorListener implements ANTLRErrorListener<unknown> {
     private errors: Diagnostic[] = [];
@@ -193,10 +191,8 @@ documents.onDidClose(e => {
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
     try {
-        const grammarParser = new GrammarParser();
-        grammarParser.parse(change.document.getText());
-
         const inputStream = CharStreams.fromString(change.document.getText());
+
         const lexer = new JabutiGrammarLexer(inputStream);
         const tokenStream = new CommonTokenStream(lexer);
         const parser = new JabutiGrammarParser(tokenStream);
@@ -205,18 +201,18 @@ documents.onDidChangeContent(change => {
         lexer.removeErrorListeners();
 
         const errorListener = new ErrorListener();
+
         parser.addErrorListener(errorListener);
         lexer.addErrorListener(errorListener);
 
         const walker = new ParseTreeWalker();
-        walker.walk(new SemanticValidor(), parser.contract());
+        walker.walk(new JabutiGrammarListenerImpl(), parser.contract());
 
         connection.sendDiagnostics({
             uri: change.document.uri,
             diagnostics: errorListener.getErrors(),
         });
     } catch (error) {
-        console.log(error);
         if (error instanceof ValidationError) {
             connection.sendDiagnostics({
                 uri: change.document.uri,
@@ -225,11 +221,11 @@ documents.onDidChangeContent(change => {
                         severity: DiagnosticSeverity.Error,
                         range: {
                             start: {
-                                line: (error.range?.start.line ?? 0) - 1,
+                                line: error.range?.start.line ?? 0,
                                 character: error.range?.start.character ?? 0,
                             },
                             end: {
-                                line: (error.range?.end.line ?? 0) - 1,
+                                line: error.range?.end.line ?? 0,
                                 character: error.range?.end.character ?? 0,
                             },
                         },

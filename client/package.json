@@ -13,7 +13,8 @@
 		"vscode": "^1.63.0"
 	},
 	"dependencies": {
-		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.1-alpha.tgz",
+		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.8.tgz",
+		"jabuti-dsl-grammar-antlr": "file:jabuti-dsl-grammar-antlr-0.0.1.tgz",
 		"vscode-languageclient": "^7.0.0"
 	},
 	"devDependencies": {

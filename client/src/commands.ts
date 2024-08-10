@@ -83,11 +83,11 @@ export const transformToEthereumSolidityCommand = baseCommand(
 
             const currentFileContent = fs.readFileSync(currentFilePath);
 
-            const code = await ethereumSolidityParser.run(
+            const code = await ethereumSolidityParser.transform(
                 currentFileContent.toString(),
             );
 
-            fs.writeFileSync(newFilePath, code);
+            fs.writeFileSync(newFilePath, code.content);
 
             return newFilePath;
         } catch (error) {
@@ -105,7 +105,7 @@ export const transformToHyperledgerGolangCommand = baseCommand(
         try {
             const currentFileContent = fs.readFileSync(currentFilePath);
 
-            const [code, goMod] = hyperledgerFabricGolangParser.run(
+            const code = hyperledgerFabricGolangParser.transform(
                 currentFileContent.toString(),
             );
 
@@ -117,9 +117,9 @@ export const transformToHyperledgerGolangCommand = baseCommand(
                 fs.mkdirSync(folderPath, { recursive: true });
             }
 
-            fs.writeFileSync(path.join(folderPath, `${fileName}.go`), code);
+            fs.writeFileSync(path.join(folderPath, `${fileName}.go`), code.content);
 
-            fs.writeFileSync(path.join(folderPath, 'go.mod'), goMod);
+            fs.writeFileSync(path.join(folderPath, 'go.mod'), code.mod);
 
             const newFileUri = path.join(folderPath, `${fileName}.go`);
 
