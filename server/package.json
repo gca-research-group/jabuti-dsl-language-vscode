@@ -2,7 +2,7 @@
 	"name": "jabuti-lang-lsp-server",
 	"description": "Language server for Jabuti Language.",
 	"version": "0.0.1",
-	"author": "Grupo de Computação Aplicada (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
+	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
 	"engines": {
 		"node": "*"
@@ -12,8 +12,8 @@
 	},
 	"dependencies": {
 		"antlr4ts": "^0.5.0-alpha.4",
-		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.8.tgz",
-		"jabuti-dsl-grammar-antlr": "file:jabuti-dsl-grammar-antlr-0.0.1.tgz",
+		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.11.tgz",
+		"jabuti-dsl-grammar-antlr": "file:jabuti-dsl-grammar-antlr-0.0.2.tgz",
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.4"
 	},

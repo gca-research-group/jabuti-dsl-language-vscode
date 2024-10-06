@@ -10,11 +10,11 @@
 
 <br/>
 
-Jabuti CE is an extension for VSCode that provides support for editing Jabuti DSL smart contracts.
+Jabuti CE is an extension for VSCode that provides support for editing smart contracts written in the Jabuti DSL.
 
 Main features:
 - Code highlighting
-- Autocompletition
+- Autocompletion
 - Code navigation
 - Syntax and semantic validation
 - Documentation on hover
@@ -36,10 +36,10 @@ Main features:
 ## Features
 
 ### Code highlighting
-<img src="assets/code-highlighting.png" alt="Autocompletition">
+<img src="assets/code-highlighting.png" alt="Autocompletion">
 
-### Autocompletition
-<img src="assets/autocompletition.gif" alt="Autocompletition">
+### Autocompletion
+<img src="assets/autocompletition.gif" alt="Autocompletion">
 
 ### Code navigation
 <img src="assets/code-navigation.gif" alt="Code navigation">
