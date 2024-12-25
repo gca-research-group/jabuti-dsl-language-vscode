@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"antlr4ts": "^0.5.0-alpha.4",
-		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.11.tgz",
+		"jabuti-ce-transformation-engine": "file:jabuti-ce-transformation-engine-0.0.12.tgz",
 		"jabuti-dsl-grammar-antlr": "file:jabuti-dsl-grammar-antlr-0.0.2.tgz",
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.4"

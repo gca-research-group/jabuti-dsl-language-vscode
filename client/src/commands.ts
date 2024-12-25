@@ -131,3 +131,81 @@ export const transformToHyperledgerGolangCommand = baseCommand(
         }
     },
 );
+
+export const formatterCommand =
+    vscode.languages.registerDocumentFormattingEditProvider('jabuti', {
+        provideDocumentFormattingEdits(document) {
+            const data = document.getText();
+            let formatedText = data.toString();
+
+            formatedText = formatedText.replace(/\t/g, ' ');
+
+            formatedText = formatedText.replace(/\}\t/g, '}');
+            formatedText = formatedText.replace(/\s{2,}=/g, ' =');
+            formatedText = formatedText.replace(/=\s{2,}/g, '= ');
+            formatedText = formatedText.replace(/\s{2,}==/g, ' ==');
+            formatedText = formatedText.replace(/==\s{2,}/g, '== ');
+            formatedText = formatedText.replace(/ \(/g, '(');
+            formatedText = formatedText.replace(/\( /g, '(');
+            formatedText = formatedText.replace(/ \)/g, ')');
+            formatedText = formatedText.replace(/}\s\n.*onBreach/g, '}\n\nonBreach');
+            formatedText = formatedText.replace(/}\n.*onBreach/g, '}\n\nonBreach');
+            formatedText = formatedText.replace(/\*\w/g, match =>
+                match.replace('*', '* '),
+            );
+            formatedText = formatedText.replace(/\w\*\//g, match =>
+                match.replace('*', ' *'),
+            );
+            formatedText = formatedText.replace(
+                /operation = \w{1,}/g,
+                match => `${match}\n`,
+            );
+
+            for (const match of formatedText.matchAll(/\/\/([^\s])/g)) {
+                formatedText = formatedText.replace(match[0], `// ${match[1]}`);
+            }
+
+            for (const match of formatedText.matchAll(/(\w){/g)) {
+                formatedText = formatedText.replace(match[0], `${match[1]} {`);
+            }
+
+            let indentation = 0;
+
+            let newText = '';
+
+            for (const line of formatedText.split('\n')) {
+                const [match] = line.match(/^(\s{1,})/) ?? [];
+
+                let formatedLine = line.toString();
+
+                if (formatedLine.includes('}')) {
+                    indentation = indentation - 1;
+                }
+
+                if (match && match.length !== 2 * indentation) {
+                    formatedLine = `${' '.repeat(
+                        2 * indentation,
+                    )}${formatedLine.replace(match, '')}`;
+                } else if (!match && indentation) {
+                    formatedLine = `${' '.repeat(2 * indentation)}${formatedLine}`;
+                }
+
+                if (formatedLine.endsWith(' ')) {
+                    formatedLine = formatedLine.trimEnd();
+                }
+
+                if (formatedLine.includes('{')) {
+                    indentation = indentation + 1;
+                }
+
+                newText += `${formatedLine}\n`;
+            }
+
+            newText = newText.replace(/\n{3,}/g, '\n\n');
+            const fullRange = new vscode.Range(
+                document.lineAt(0).range.start,
+                document.lineAt(document.lineCount - 1).range.end,
+            );
+            return [vscode.TextEdit.replace(fullRange, newText)];
+        },
+    });

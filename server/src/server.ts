@@ -221,11 +221,11 @@ documents.onDidChangeContent(change => {
                         severity: DiagnosticSeverity.Error,
                         range: {
                             start: {
-                                line: error.range?.start.line ?? 0,
+                                line: (error.range?.start.line ?? 1) - 1,
                                 character: error.range?.start.character ?? 0,
                             },
                             end: {
-                                line: error.range?.end.line ?? 0,
+                                line: (error.range?.end.line ?? 1) - 1,
                                 character: error.range?.end.character ?? 0,
                             },
                         },

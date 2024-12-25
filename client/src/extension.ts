@@ -13,6 +13,7 @@ import {
     TransportKind,
 } from 'vscode-languageclient/node';
 import {
+    formatterCommand,
     transformToEthereumSolidityCommand,
     transformToHyperledgerGolangCommand,
 } from './commands';
@@ -22,6 +23,7 @@ let client: LanguageClient;
 export function activate(context: ExtensionContext) {
     context.subscriptions.push(transformToEthereumSolidityCommand);
     context.subscriptions.push(transformToHyperledgerGolangCommand);
+    context.subscriptions.push(formatterCommand);
 
     const serverModule = context.asAbsolutePath(path.join('dist', 'server.js'));
 

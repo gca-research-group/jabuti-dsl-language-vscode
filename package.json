@@ -5,7 +5,7 @@
 	"icon": "assets/logo-background-128.png",
 	"author": "Applied Computing Research Group (Unijui, RS) <mailson.borges@sou.unijui.edu.br>",
 	"license": "MIT",
-	"version": "0.0.5",
+	"version": "0.0.8",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gca-research-group/jabuti-dsl-language-vscode"
@@ -32,6 +32,12 @@
 					"default": 1,
 					"description": "Controls the maximum number of problems produced by the server."
 				}
+			}
+		},
+		"configurationDefaults": {
+			"[jabuti]": {
+				"editor.defaultFormatter": "gca-unijui.jabuti-ce-vscode-plugin",
+				"editor.formatOnSave": true
 			}
 		},
 		"languages": [
