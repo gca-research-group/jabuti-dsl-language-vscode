@@ -136,30 +136,23 @@ export const formatterCommand =
     vscode.languages.registerDocumentFormattingEditProvider('jabuti', {
         provideDocumentFormattingEdits(document) {
             const data = document.getText();
-            let formatedText = data.toString();
-
-            formatedText = formatedText.replace(/\t/g, ' ');
-
-            formatedText = formatedText.replace(/\}\t/g, '}');
-            formatedText = formatedText.replace(/\s{2,}=/g, ' =');
-            formatedText = formatedText.replace(/=\s{2,}/g, '= ');
-            formatedText = formatedText.replace(/\s{2,}==/g, ' ==');
-            formatedText = formatedText.replace(/==\s{2,}/g, '== ');
-            formatedText = formatedText.replace(/ \(/g, '(');
-            formatedText = formatedText.replace(/\( /g, '(');
-            formatedText = formatedText.replace(/ \)/g, ')');
-            formatedText = formatedText.replace(/}\s\n.*onBreach/g, '}\n\nonBreach');
-            formatedText = formatedText.replace(/}\n.*onBreach/g, '}\n\nonBreach');
-            formatedText = formatedText.replace(/\*\w/g, match =>
-                match.replace('*', '* '),
-            );
-            formatedText = formatedText.replace(/\w\*\//g, match =>
-                match.replace('*', ' *'),
-            );
-            formatedText = formatedText.replace(
-                /operation = \w{1,}/g,
-                match => `${match}\n`,
-            );
+            let formatedText = data
+                .toString()
+                .replace(/\t/g, ' ')
+                .replace(/\}\t/g, '}')
+                .replace(/\s{2,}=/g, ' =')
+                .replace(/=\s{2,}/g, '= ')
+                .replace(/\s{2,}==/g, ' ==')
+                .replace(/==\s{2,}/g, '== ')
+                .replace(/ \(/g, '(')
+                .replace(/\( /g, '(')
+                .replace(/ \)/g, ')')
+                .replace(/}\s*\n.*(onBreach)/g, '}\n\n$1') // Add a line break after closing terms block
+                .replace(/\*\w/g, match => match.replace('*', '* ')) // Add a space after opening a comment
+                .replace(/\w\*\//g, match => match.replace('*', ' *')) // Add a space before closing a comment
+                .replace(/operation = \w{1,}/g, match => `${match}\n`) // Add a line break after operation attribute
+                .replace(/(terms \{[^{]*?)\n{2,}/g, '$1\n') // Remove double line breaks within terms
+                .replace(/(\})\n(\s*\w+)/g, '$1\n\n$2'); // Add a line break after closing a block
 
             for (const match of formatedText.matchAll(/\/\/([^\s])/g)) {
                 formatedText = formatedText.replace(match[0], `// ${match[1]}`);
@@ -178,7 +171,7 @@ export const formatterCommand =
 
                 let formatedLine = line.toString();
 
-                if (formatedLine.includes('}')) {
+                if (formatedLine.includes('}') && indentation > 0) {
                     indentation = indentation - 1;
                 }
 
