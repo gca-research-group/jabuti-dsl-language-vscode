@@ -34,7 +34,6 @@ import { completitionProvider } from './providers/completition-provider';
 import { symbolProvider } from './providers/symbol-provider';
 import { definitionProvider } from './providers/definition-provider';
 import {
-    GrammarParser,
     JabutiGrammarListenerImpl,
     ValidationError,
 } from 'jabuti-ce-transformation-engine';

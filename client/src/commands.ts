@@ -152,7 +152,8 @@ export const formatterCommand =
                 .replace(/\w\*\//g, match => match.replace('*', ' *')) // Add a space before closing a comment
                 .replace(/operation = \w{1,}/g, match => `${match}\n`) // Add a line break after operation attribute
                 .replace(/(terms \{[^{]*?)\n{2,}/g, '$1\n') // Remove double line breaks within terms
-                .replace(/(\})\n(\s*\w+)/g, '$1\n\n$2'); // Add a line break after closing a block
+                .replace(/(\})\n(\s*\w+)/g, '$1\n\n$2') // Add a line break after closing a block
+                .replace(/\}\s*\}\s*\}\s*$/g, '    }\n  }\n}\n');
 
             for (const match of formatedText.matchAll(/\/\/([^\s])/g)) {
                 formatedText = formatedText.replace(match[0], `// ${match[1]}`);
@@ -166,7 +167,9 @@ export const formatterCommand =
 
             let newText = '';
 
-            for (const line of formatedText.split('\n')) {
+            const splitted = formatedText.split('\n');
+
+            splitted.forEach((line, index) => {
                 const [match] = line.match(/^(\s{1,})/) ?? [];
 
                 let formatedLine = line.toString();
@@ -191,10 +194,15 @@ export const formatterCommand =
                     indentation = indentation + 1;
                 }
 
-                newText += `${formatedLine}\n`;
-            }
+                newText += `${formatedLine}`;
+
+                if (index !== splitted.length - 1) {
+                    newText += '\n';
+                }
+            });
 
             newText = newText.replace(/\n{3,}/g, '\n\n');
+
             const fullRange = new vscode.Range(
                 document.lineAt(0).range.start,
                 document.lineAt(document.lineCount - 1).range.end,
